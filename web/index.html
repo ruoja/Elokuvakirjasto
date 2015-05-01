@@ -6,26 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Elokuvakirjasto</title>
     </head>
-    <body>
+    <body ng-app="MovieApp">
         <h1>Elokuvakirjasto</h1>
-        <div ng-app="MovieApp">
-            <div ng-controller="AddController">
-                <p><label>Elokuvan nimi:</label>
-                    <input type="text" ng-model="name"></p>
-                <p><label>Elokuvan ohjaaja:</label>
-                    <input type="text" ng-model="director"></p>
-                <p><label>Elokuvan julkaisuvuosi:</label>
-                    <input type="number" ng-model="year"></p>
-                <p><label>Elokuvan kuvaus:</label>
-                    <textarea ng-model="description"></textarea></p>
-                <button ng-click="addMovie()">Lisää elokuva</button>
-            </div>
-            <div ng-controller="ListController">
-                <ul ng-repeat="movie in movies">
-                    <li>{{movie.name}}</li>
-                </ul>
-            </div>
-        </div>
+        <div ng-view></div>
 
         <!-- Hyödyllisiä kirjastoja -->
         <script src="bower_components/angular/angular.min.js"></script>

@@ -1,0 +1,35 @@
+<form name="movieForm">
+    <p>
+        <label>Elokuvan nimi:</label>
+        <input name="name" type="text" ng-model="name" required>
+    <div ng-show="movieForm.name.$invalid && movieForm.name.$dirty">
+        Pakollinen kenttä!
+    </div>
+</p>
+
+<p>
+    <label>Elokuvan ohjaaja:</label>
+    <input name="director" type="text" ng-model="director" required>
+<div ng-show="movieForm.director.$invalid && movieForm.director.$dirty">
+    Pakollinen kenttä!
+</div>
+</p>
+
+<p>
+    <label>Elokuvan julkaisuvuosi:</label>
+    <input name="year" type="number" min="1900" ng-model="year" required>
+<div ng-show="movieForm.year.$invalid && movieForm.year.$dirty">
+    Pakollinen kenttä!
+</div>
+</p>
+
+<p>
+    <label>Elokuvan kuvaus:</label>
+    <textarea name="description" ng-model="description" required></textarea>
+<div ng-show="movieForm.description.$invalid && movieForm.description.$dirty">
+    Pakollinen kenttä!
+</div>
+</p>
+
+<button name="button" ng-click="addMovie()" ng-disabled="movieForm.$invalid">Lisää elokuva</button>
+</form>
