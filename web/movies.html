@@ -1,6 +1,29 @@
 <div ng-controller="ListController">
-    <a href="#/movies/new"><button>Lisää uusi</button></a>
-    <ul ng-repeat="movie in movies">
-        <li><a ng-href="#/movies/{{movie.$id}}">{{movie.name}}</a> <button ng-click="removeMovie(movie)">poista</button></li>
-    </ul>
+
+    <a href="#/movies/new"><button ng-hide="movies.omdb">Lisää uusi</button></a>
+
+    <button ng-show="movies.omdb" ng-click="getMovies()">omat elokuvat</button>
+
+    <button ng-click="findMovie(searchtext, searchyear)">hae OMDBstä</button>
+    <input name="searchtext" type="text" placeholder="elokuvan nimi" ng-model="searchtext" required>
+    <input name="searchyear" type="number" min="1900" placeholder="elokuvan julkaisuvuosi" ng-model="searchyear">
+
+    <h4 ng-if="!movies.omdb">omat elokuvat</h4>
+    <h4 ng-if="movies.omdb">hakutulokset</h4>
+
+
+    <div ng-hide="movies.omdb" ng-repeat="movie in movies">
+        <ul>
+            <li><a ng-href="#/movies/{{movie.$id}}">{{movie.name}}</a> <button ng-click="removeMovie(movie)">poista</button></li>
+        </ul>
+    </div>
+
+    <div ng-show="movies.omdb">
+        <p><ng-pluralize count="omdbmovies.Search.length" when="{'0': 'Hakusanalla ei löytynyt elokuvia',
+           'one': 'Haulla löytyi {} elokuva',
+           'other': 'Haulla löytyi {} elokuvaa'}"></ng-pluralize></p>
+        <ul ng-repeat="movie in omdbmovies.Search">
+            <li><a ng-href="http://www.imdb.com/title/{{movie.imdbID}}">{{movie.Title}}</a> {{movie.Year}}</li>
+        </ul>
+    </div>
 </div>

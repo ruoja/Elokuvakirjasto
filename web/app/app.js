@@ -28,6 +28,13 @@ MovieApp.service('FirebaseService', function ($firebase) {
     };
 });
 
+MovieApp.service('APIService', function ($http) {
+    var url = 'http://www.omdbapi.com';
+    this.findMovie = function (name, year) {
+        return $http.get(url, {params: {s: name, y: year}});
+    };
+});
+
 MovieApp.config(function ($routeProvider) {
     $routeProvider
             .when('/', {
@@ -55,13 +62,30 @@ MovieApp.config(function ($routeProvider) {
             });
 });
 
-MovieApp.controller('ListController', function ($scope, FirebaseService) {
+MovieApp.config(['$httpProvider', function ($httpProvider) {
+        delete $httpProvider.defaults.headers.common["X-Requested-With"];
+    }]);
+
+MovieApp.controller('ListController', function ($scope, FirebaseService, APIService) {
     $scope.movies = FirebaseService.getMovies();
     $scope.getMovies = function () {
-        FirebaseService.getMovies();
+        $scope.movies = FirebaseService.getMovies();
+        delete $scope.movies.omdb;
     };
     $scope.removeMovie = function (movie) {
         FirebaseService.removeMovie(movie);
+    };
+    $scope.findMovie = function (name, year) {
+        $scope.movies.omdb = true;
+        APIService.findMovie(name, year).success(function (movies) {
+            if (movies.Response == 'False') {
+                $scope.omdbmovies.Search.length = 0;
+            } else {
+                $scope.omdbmovies = movies;
+            }
+        });
+        $scope.searchtext = '';
+        $scope.searchyear = '';
     };
 });
 
