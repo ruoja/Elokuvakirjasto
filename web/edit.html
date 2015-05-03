@@ -1,0 +1,36 @@
+<form name="editForm">
+    <p>
+        <label>Elokuvan nimi:</label>
+        <input name="editName" type="text" ng-model="editName">
+    <div ng-show="editForm.editName.$invalid && editForm.editName.$dirty">
+        Pakollinen kenttä!
+    </div>
+</p>
+
+<p>
+    <label>Elokuvan ohjaaja:</label>
+    <input name="editDirector" type="text" ng-model="editDirector" required>
+<div ng-show="editForm.editDirector.$invalid && editForm.editDirector.$dirty">
+    Pakollinen kenttä!
+</div>
+</p>
+
+<p>
+    <label>Elokuvan julkaisuvuosi:</label>
+    <input name="editYear" type="number" min="1900" ng-model="editYear" required>
+<div ng-show="editForm.editYear.$invalid && editForm.editYear.$dirty">
+    Pakollinen kenttä!
+</div>
+</p>
+
+<p>
+    <label>Elokuvan kuvaus:</label>
+    <textarea name="editDescription" ng-model="editDescription" required></textarea>
+<div ng-show="editForm.editDescription.$invalid && editForm.editDescription.$dirty">
+    Pakollinen kenttä!
+</div>
+</p>
+
+<button name="button" ng-click="editMovie(movie)" ng-disabled="editForm.$invalid">tallenna</button>
+<a href="#/movies/{{movie.$id}}"><button>palaa</button></a>
+</form>

@@ -1,0 +1,8 @@
+<div ng-controller="ShowController">
+    <h2>{{movie.name}}</h2>
+    <p>Ohjaaja: {{movie.director}}</p>
+    <p>Julkaisuvuosi: {{movie.year}}</p>
+    <p>{{movie.description}}</p>
+    <a href="#/movies/{{movie.$id}}/edit"><button>muokkaa</button></a>
+    <a href="#/movies"><button>palaa</button></a>
+</div>

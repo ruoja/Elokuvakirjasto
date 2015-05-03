@@ -4,7 +4,6 @@ describe('Add movie', function () {
     var FirebaseServiceMock;
 
     beforeEach(function () {
-        // Lisää moduulisi nimi tähän
         module('MovieApp');
 
         FirebaseServiceMock = (function () {
@@ -37,20 +36,14 @@ describe('Add movie', function () {
         spyOn(FirebaseServiceMock, 'getMovies').and.callThrough();
         spyOn(FirebaseServiceMock, 'addMovie').and.callThrough();
 
-        // Injektoi toteuttamasi kontrolleri tähän
         inject(function ($controller, $rootScope) {
             scope = $rootScope.$new();
-            // Muista vaihtaa oikea kontrollerin nimi!
             controller = $controller('AddController', {
                 $scope: scope,
                 FirebaseService: FirebaseServiceMock
             });
         });
     });
-
-    /*
-     * Testaa alla esitettyjä toimintoja kontrollerissasi
-     */
 
     /*
      * Testaa, että käyttäjä pystyy lisäämään elokuvan oikeilla tiedoilla.

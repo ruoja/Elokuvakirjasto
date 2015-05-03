@@ -1,6 +1,6 @@
 <div ng-controller="ListController">
-    <a href="#/movies/new">Lisää uusi</a>
+    <a href="#/movies/new"><button>Lisää uusi</button></a>
     <ul ng-repeat="movie in movies">
-        <li>{{movie.name}}</li>
+        <li><a ng-href="#/movies/{{movie.$id}}">{{movie.name}}</a> <button ng-click="removeMovie(movie)">poista</button></li>
     </ul>
 </div>
