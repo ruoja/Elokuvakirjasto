@@ -14,7 +14,7 @@
 
     <div ng-hide="movies.omdb" ng-repeat="movie in movies">
         <ul>
-            <li><a ng-href="#/movies/{{movie.$id}}">{{movie.name}}</a> <button ng-click="removeMovie(movie)">poista</button></li>
+            <li><a ng-href="#/movies/{{movie.$id}}">{{movie.name}}</a> <button ng-show="logged" ng-click="removeMovie(movie)">poista</button></li>
         </ul>
     </div>
 

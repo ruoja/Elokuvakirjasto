@@ -4,9 +4,11 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
         <title>Elokuvakirjasto</title>
     </head>
     <body ng-app="MovieApp">
+        <button ng-click="logOut()" ng-if="userLoggedIn()">Kirjaudu ulos</button>
         <h1>Elokuvakirjasto</h1>
         <div ng-view></div>
 

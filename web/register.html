@@ -1,0 +1,13 @@
+<form name='loginForm'>
+    <p>Rekiströidy käyttäjäksi</p>
+    <p>
+        <label>käyttäjätunnus:</label>
+        <input type="email" ng-model="newEmail">
+    </p>
+    <p>
+        <label>salasana:</label>
+        <input type='password' ng-model="newPassword">
+    </p>
+    <button ng-click="register()">rekisteröidy</button>
+</form>
+<p ng-if='message'>{{message}}</p>

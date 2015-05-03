@@ -35,11 +35,46 @@ MovieApp.service('APIService', function ($http) {
     };
 });
 
+MovieApp.service('AuthenticationService', function ($firebase, $firebaseAuth) {
+    var firebaseRef = new Firebase('https://sweltering-fire-6863.firebaseio.com/movies');
+    var firebaseAuth = $firebaseAuth(firebaseRef);
+
+    this.logUserIn = function (email, password) {
+        return firebaseAuth.$authWithPassword({
+            email: email,
+            password: password
+        });
+    };
+
+    this.createUser = function (email, password) {
+        return firebaseAuth.$createUser({
+            email: email,
+            password: password
+        });
+    };
+
+    this.checkLoggedIn = function () {
+        return firebaseAuth.$waitForAuth();
+    };
+
+    this.logUserOut = function () {
+        firebaseAuth.$unauth();
+    };
+
+    this.getUserLoggedIn = function () {
+        return firebaseAuth.$getAuth();
+    };
+});
+
 MovieApp.config(function ($routeProvider) {
     $routeProvider
             .when('/', {
-                controller: 'ListController',
-                templateUrl: 'movies.html'
+                controller: 'UserController',
+                templateUrl: 'login.html'
+            })
+            .when('/register', {
+                controller: 'UserController',
+                templateUrl: 'register.html'
             })
             .when('/movies', {
                 controller: 'ListController',
@@ -47,7 +82,12 @@ MovieApp.config(function ($routeProvider) {
             })
             .when('/movies/new', {
                 controller: 'AddController',
-                templateUrl: 'new.html'
+                templateUrl: 'new.html',
+                resolve: {
+                    currentAuth: function (AuthenticationService) {
+                        return AuthenticationService.checkLoggedIn();
+                    }
+                }
             })
             .when('/movies/:id', {
                 controller: 'ShowController',
@@ -55,7 +95,12 @@ MovieApp.config(function ($routeProvider) {
             })
             .when('/movies/:id/edit', {
                 controller: 'EditController',
-                templateUrl: 'edit.html'
+                templateUrl: 'edit.html',
+                resolve: {
+                    currentAuth: function (AuthenticationService) {
+                        return AuthenticationService.checkLoggedIn();
+                    }
+                }
             })
             .otherwise({
                 redirectTo: '/'
@@ -66,7 +111,7 @@ MovieApp.config(['$httpProvider', function ($httpProvider) {
         delete $httpProvider.defaults.headers.common["X-Requested-With"];
     }]);
 
-MovieApp.controller('ListController', function ($scope, FirebaseService, APIService) {
+MovieApp.controller('ListController', function ($scope, FirebaseService, APIService, AuthenticationService) {
     $scope.movies = FirebaseService.getMovies();
     $scope.getMovies = function () {
         $scope.movies = FirebaseService.getMovies();
@@ -87,9 +132,13 @@ MovieApp.controller('ListController', function ($scope, FirebaseService, APIServ
         $scope.searchtext = '';
         $scope.searchyear = '';
     };
+    $scope.logged = AuthenticationService.getUserLoggedIn();
 });
 
-MovieApp.controller('AddController', function ($scope, FirebaseService, $location) {
+MovieApp.controller('AddController', function ($scope, FirebaseService, $location, currentAuth) {
+    if (!currentAuth) {
+        $location.path('/login');
+    }
     $scope.movies = FirebaseService.getMovies();
     $scope.addMovie = function (movie) {
         if ($scope.name !== '' && $scope.director !== '' && $scope.year !== '' && $scope.description !== '') {
@@ -110,7 +159,10 @@ MovieApp.controller('ShowController', function ($scope, $routeParams, FirebaseSe
     });
 });
 
-MovieApp.controller('EditController', function ($scope, $routeParams, FirebaseService, $location) {
+MovieApp.controller('EditController', function ($scope, $routeParams, FirebaseService, $location, currentAuth) {
+    if (!currentAuth) {
+        $location.path('/login');
+    }
     FirebaseService.getMovie($routeParams.id, function (movie) {
         $scope.movie = movie;
         $scope.editName = movie.name;
@@ -129,5 +181,41 @@ MovieApp.controller('EditController', function ($scope, $routeParams, FirebaseSe
             FirebaseService.editMovie(movie);
             $location.path('#/movies/' + $routeParams.id);
         }
+    };
+});
+
+MovieApp.controller('UserController', function ($scope, $location, AuthenticationService) {
+
+    $scope.logIn = function () {
+        AuthenticationService.logUserIn($scope.email, $scope.password)
+                .then(function () {
+                    $location.path('/movies');
+                })
+                .catch(function () {
+                    $scope.message = 'Väärä sähköpostiosoite tai salasana!';
+                });
+    };
+
+    $scope.register = function () {
+        AuthenticationService.createUser($scope.newEmail, $scope.newPassword)
+                .then(function () {
+                    AuthenticationService.logUserIn($scope.newEmail, $scope.newPassword)
+                            .then(function () {
+                                $location.path('/movies');
+                            });
+                })
+                .catch(function () {
+                    $scope.message = 'Tapahtui virhe! Yritä uudestaan';
+                });
+    };
+});
+
+MovieApp.run(function (AuthenticationService, $rootScope, $location) {
+    $rootScope.logOut = function () {
+        AuthenticationService.logUserOut();
+        $location.path('/login');
+    };
+    $rootScope.userLoggedIn = function () {
+      return AuthenticationService.getUserLoggedIn();
     };
 });

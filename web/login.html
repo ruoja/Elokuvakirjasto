@@ -1,0 +1,14 @@
+<form name='loginForm'>
+    <p>Kirjaudu sisään palveluun</p>
+    <p>
+        <label>käyttäjätunnus:</label>
+        <input type="email" ng-model="email">
+    </p>
+    <p>
+        <label>salasana:</label>
+        <input type='password' ng-model="password">
+    </p>
+    <button ng-click="logIn()">kirjaudu sisään</button>
+    <a href="#/register"><button ng-click="register()">rekisteröidy</button></a>
+</form>
+<p ng-if='message'>{{message}}</p>
